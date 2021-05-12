@@ -5,7 +5,6 @@ import {FaArrowsAltV} from 'react-icons/fa';
 
 function App() {
   const BASE_URL = "http://data.fixer.io/api/latest?access_key=434653cdde5e98ee627ec2027917d78d&format=1";
-
   const [currOptions, setCurrOptions] = useState([]);
   const [fromCurr, setFromCurr] = useState();
   const [toCurr, setToCurr] = useState();
