@@ -2,57 +2,60 @@ import { useEffect, useState } from "react";
 import './App.css';
 import Converter from './components/Converter';
 import {FaArrowsAltV} from 'react-icons/fa';
+const BASE_URL = "http://data.fixer.io/api/latest?access_key=434653cdde5e98ee627ec2027917d78d&format=1";
 
 function App() {
-  const BASE_URL = "http://data.fixer.io/api/latest?access_key=434653cdde5e98ee627ec2027917d78d&format=1";
-  const [currOptions, setCurrOptions] = useState([]);
-  const [fromCurr, setFromCurr] = useState();
-  const [toCurr, setToCurr] = useState();
+  const [currencyOptions, setCurrencyOptions] = useState([]);
+  const [fromCurrency, setFromCurrency] = useState();
+  const [toCurrency, setToCurrency] = useState();
   const [amount, setAmount] = useState(1);
-  const [amountInFromCurr, setAmountInFromCurr] = useState(true);
+  const [amountInFromCurrency, setAmountInFromCurrency] = useState(true);
   const [exchangeRate, setExchangeRate] = useState();
-  const onChangeSelectedFromCurr = (e) => setFromCurr(e.target.value);
-  const onChangeSelectedToCurr = (e) => setToCurr(e.target.value);
 
-  useEffect( () => {
-    fetch(BASE_URL)
-      .then(res => res.json())
-      .then(data => {
-        const firstCurr = Object.keys(data.rates)[0];
-        setCurrOptions([...Object.keys(data.rates)]);
-        setFromCurr(data.base);
-        setToCurr(firstCurr);
-        setExchangeRate(data.rates[firstCurr])
-        // console.log(data);
-      })
-  },[])
+let toAmount, fromAmount;
+if(amountInFromCurrency){
+  fromAmount = amount
+  toAmount = amount*exchangeRate
+}else{
+  toAmount = amount
+  fromAmount = amount/exchangeRate
+}
 
 useEffect(() => {
-  if(fromCurr != null && toCurr != null){
-    fetch(`${BASE_URL}?base=${fromCurr}&symbols=${toCurr}`)
-    .then(res => res.json())
-    .then(data => setExchangeRate(data.rates[toCurr]))
-  }
-}, [fromCurr, toCurr])
+  fetch(BASE_URL)
+    .then (res => res.json())
+    .then (data => {
+      const firstCurrency = Object.keys(data.rates)[0]
+      setCurrencyOptions([data.base,...Object.keys(data.rates)])
+      setFromCurrency(data.base)
+      setToCurrency(firstCurrency)
+      setExchangeRate(data.rates[firstCurrency])
+    })
+}, [])
 
-
-  let toAmount, fromAmount;
-  if (amountInFromCurr){
-    fromAmount = amount;
-    toAmount = amount*exchangeRate;
-  }else{
-    toAmount = amount;
-    fromAmount = amount/exchangeRate;
+useEffect(() => {
+  if(fromCurrency != null && toCurrency != null){
+    fetch(`${BASE_URL}?base=${fromCurrency}&symbols=${toCurrency}`)
+      .then(res => res.json())
+      .then(data => setExchangeRate(data.rates[toCurrency]))
   }
-  const handleFromAmountChange = (e) => {setAmount(e.target.value); setAmountInFromCurr(true)}
-  const handleToAmountChange = (e) => {setAmount(e.target.value); setAmountInFromCurr(false)}
-  
+}, [fromCurrency, toCurrency])
+
+const handleFromAmountChange = (e) => {
+  setAmount(e.target.value)
+  setAmountInFromCurrency(true)
+}
+const handleToAmountChange = (e) => {
+  setAmount(e.target.value)
+  setAmountInFromCurrency(false)
+}
+
   return (
    <>
-   <Converter currOptions = {currOptions} selectedCurr = {fromCurr} onChangeSelectedCurr = {onChangeSelectedFromCurr} theAmount = {fromAmount} onChangeAmount = {handleFromAmountChange} />
-   <div className="arrow"><FaArrowsAltV /></div>
-   <Converter currOptions = {currOptions} selectedCurr = {toCurr} onChangeSelectedCurr = {onChangeSelectedToCurr} theAmount = {toAmount} onChangeAmount = {handleToAmountChange} />
-
+    <h1>Currency Converter</h1>
+    <Converter currencyOptions={currencyOptions} selectedCurrency={fromCurrency} onChangeCurrency={e => setFromCurrency(e.target.value)} onChangeAmount={handleFromAmountChange} amount={fromAmount} />
+    <div className="arrow"><FaArrowsAltV /></div>
+    <Converter currencyOptions={currencyOptions} selectedCurrency={toCurrency} onChangeCurrency={e => setToCurrency(e.target.value)} onChangeAmount={handleToAmountChange} amount={toAmount} />
    </>
   );
 }

@@ -10,6 +10,9 @@ body {
   text-align: center;
   min-height: 100vh;
 }
+h1 {
+  margin-bottom: 10px;
+}
 .arrow {
   margin: 10px 0 10px 0;
 }
