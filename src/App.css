@@ -19,7 +19,13 @@ h1 {
 input {
   padding: 0.5rem;
   margin-right: 10px;
+  border: 1px solid rgb(94, 15, 48);
+  border-bottom: 3px solid rgb(94, 15, 48);
+  border-radius: 4px;
 }
 select {
   padding: 0.5rem;
+  border: 1px solid rgb(94, 15, 48);
+  border-bottom: 3px solid rgb(94, 15, 48);
+  border-radius: 4px;
 }
