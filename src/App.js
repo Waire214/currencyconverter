@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import './App.css';
 import Converter from './components/Converter';
 import {FaArrowsAltV} from 'react-icons/fa';
-const BASE_URL = "http://data.fixer.io/api/latest?access_key=434653cdde5e98ee627ec2027917d78d&format=1";
+const BASE_URL = "https://api.openrates.io/latest";
 
 function App() {
   const [currencyOptions, setCurrencyOptions] = useState([]);
